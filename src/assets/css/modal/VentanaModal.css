@@ -1,0 +1,13 @@
+.aparecer-modal {
+  margin-top: -100%;
+  animation: aparecer 0.5s forwards;
+}
+
+@keyframes aparecer {
+  from {
+    margin-top: -100%;
+  }
+  to {
+    margin-top: 0;
+  }
+}
