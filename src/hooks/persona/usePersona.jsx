@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { RUTASADMINISTRADOR } from "../../models/routes.model";
@@ -44,6 +44,8 @@ function usePersona() {
     const navigate = useNavigate();
     const tituloModal = persona.estado ? "Actualizar persona" : "Crear persona";
     const [formularioModal, setFormularioModal] = useState("");
+    const inputRefs = useRef([]);
+    const [codigoVerificacion, setCodigoVerificacion] = useState([]);
 
     const recargar = () => {
         setPersona({
@@ -304,7 +306,7 @@ function usePersona() {
         }
     };
 
-    const digitarCodigoVerificacion = (documento = "") => { 
+    const digitarCodigoVerificacion = (documento = "") => {
         setFormularioModal("CodigoVerificacion");
         setPersona({
             ...persona,
@@ -313,11 +315,37 @@ function usePersona() {
         setOpenModal(!openModal);
     };
 
+    const handleCodigoVerificacion = (e, index) => {
+        const { value } = e.target;
+        if (value.length === 1) {
+            setCodigoVerificacion(prevCodigoVerificacion => {
+                const nuevoCodigo = [...prevCodigoVerificacion];
+                nuevoCodigo[index] = value;
+                if (index < inputRefs.current.length - 1) {
+                    inputRefs.current[index + 1].focus();
+                }
+                console.log(nuevoCodigo);
+                return nuevoCodigo;
+            });
+        }
+    };
+
+    const handleEliminarDigitoCodigoVerificacion = (e, index) => {
+        setCodigoVerificacion(prevCodigoVerificacion => {
+            const nuevoCodigo = [...prevCodigoVerificacion];
+            nuevoCodigo.splice(index, 1);
+            if (e.key === 'Backspace' && e.target.value === '' && index > 0) {
+                inputRefs.current[index - 1].focus();
+            }
+            console.log(nuevoCodigo);
+            return nuevoCodigo;
+        });
+    };
+
     useEffect(() => {
         getListadoPersonasVerificadas();
         getListadoPersonasSinVerificar();
     }, []);
-
     return {
         listadoPersonasVerificadas,
         listadoPersonasSinVerificar,
@@ -330,6 +358,7 @@ function usePersona() {
         zona,
         persona,
         formularioModal,
+        inputRefs,
         toggleModal,
         handleChange,
         registrarPersona,
@@ -338,6 +367,8 @@ function usePersona() {
         actualizarPersona,
         actualizarCodigoVerificacion,
         digitarCodigoVerificacion,
+        handleCodigoVerificacion,
+        handleEliminarDigitoCodigoVerificacion,
     };
 }
 

@@ -2,9 +2,9 @@ import React from "react";
 import { useLocation } from "react-router-dom";
 import { imagenes } from "../../../assets/img/imagenes";
 import DataTablePersonaComponent from "../../../components/admin/personas/DataTablePersonaComponent";
-import FormularioPersonaComponent from "../../../components/admin/personas/FormularioPersonaComponent";
-import OpcionesPersonaComponent from "../../../components/admin/personas/OpcionesPersonaComponent";
-import SubNavbarPersonaComponent from "../../../components/admin/personas/SubNavbarPersonaComponent";
+import FormularioPersonaComponent from "../../../components/admin/personas/formularios/FormularioPersonaComponent";
+import OpcionesPersonaComponent from "../../../components/admin/personas/selecciones/OpcionesPersonaComponent";
+import SubNavbarPersonaComponent from "../../../components/admin/personas/selecciones/SubNavbarPersonaComponent";
 import useCiudad from "../../../hooks/localidad/useCiudad";
 import useDepartamento from "../../../hooks/localidad/useDepartamento";
 import useSubdivision from "../../../hooks/localidad/useSubdivision";
@@ -13,6 +13,7 @@ import useTipoDocumento from "../../../hooks/persona/useTipoDocumento";
 import { personaColumn } from "../../../models/columns/PersonaColumn";
 import Container from "../../../utils/container/Container";
 import VentanaModal from "../../../utils/modal/VentanaModal";
+import FormularioCodigoVerificacionComponent from "../../../components/admin/personas/formularios/FormularioCodigoVerificacionComponent";
 
 function PersonasAdminPage() {
     const {
@@ -27,6 +28,7 @@ function PersonasAdminPage() {
         ciudad_id,
         persona,
         formularioModal,
+        inputRefs,
         toggleModal,
         handleChange,
         registrarPersona,
@@ -35,6 +37,8 @@ function PersonasAdminPage() {
         actualizarPersona,
         actualizarCodigoVerificacion,
         digitarCodigoVerificacion,
+        handleCodigoVerificacion,
+        handleEliminarDigitoCodigoVerificacion,
     } = usePersona();
     let perfilGenero = "";
     if (cambiarPerfilGenero === "Masculino" || persona.genero === "Masculino") {
@@ -79,12 +83,12 @@ function PersonasAdminPage() {
                             perfilGenero={perfilGenero}
                         />
                     )
-                };
+                }
                 {
                     formularioModal === "CodigoVerificacion" && (
-                        <></>
+                        <FormularioCodigoVerificacionComponent inputRefs={inputRefs} handleCodigoVerificacion={handleCodigoVerificacion} handleEliminarDigitoCodigoVerificacion={handleEliminarDigitoCodigoVerificacion} />
                     )
-                };
+                }
             </VentanaModal>
             <Container>
                 <div className={`w-full grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-1 -mt-1 transform transition-transform ${location.hash === "#personas" || location.hash === "" ? "scale-x-100" : "scale-x-0 fixed duration-0"}`} >
